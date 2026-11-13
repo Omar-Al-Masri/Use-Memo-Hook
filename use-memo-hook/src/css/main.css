@@ -17,6 +17,8 @@ body { margin: 0; font-family: Arial, sans-serif; background: #f4f6fa; color: #2
 .expense-form input, .expense-tracker button { padding: 10px 12px; font: inherit; border: 1px solid #cbd2df; border-radius: 6px; }
 .expense-tracker button { cursor: pointer; background: #245bcc; color: white; }
 .expense-tracker button:hover { background: #19469f; }
+.expense-tracker select { display: block; width: 100%; margin-top: 8px; padding: 10px 12px; font: inherit; border: 1px solid #cbd2df; border-radius: 6px; background: white; }
+.expense-list small { color: #58647a; }
 .memo-note { color: #58647a; font-size: 14px; }
 .expense-list { list-style: none; padding: 0; }
 .expense-list li { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 12px 0; border-bottom: 1px solid #e4e8ef; }

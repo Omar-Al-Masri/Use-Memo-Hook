@@ -4,10 +4,19 @@ function Form() {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [expenses, setExpenses] = useState([]);
+  const [category, setCategory] = useState("Food");
+  const [filter, setFilter] = useState("All");
 
+  // Update the displayed list only when expenses or the filter changes.
+  const filteredExpenses = useMemo(() => {
+    if (filter === "All") return expenses;
+    return expenses.filter((expense) => expense.category === filter);
+  }, [expenses, filter]);
+
+  // Calculate the total for the expenses currently displayed.
   const total = useMemo(() => {
-    return expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  }, [expenses]);
+    return filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+  }, [filteredExpenses]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -17,6 +26,7 @@ function Form() {
       id: crypto.randomUUID(),
       name: name,
       amount: value,
+      category: category,
     };
     setExpenses([...expenses, newExpense]);
     setName("");
@@ -48,20 +58,38 @@ function Form() {
           onChange={(event) => setAmount(event.target.value)}
           placeholder="e.g. 25.00"
         />
+        <label htmlFor="expense-category">Category</label>
+        <select id="expense-category" value={category}
+          onChange={(event) => setCategory(event.target.value)}>
+          <option>Food</option>
+          <option>Transport</option>
+          <option>Shopping</option>
+          <option>Other</option>
+        </select>
         <button type="submit">Add expense</button>
       </form>
-      <h2>Total spent: ${total.toFixed(2)}</h2>
+      <label htmlFor="category-filter">Show category</label>
+      <select id="category-filter" value={filter}
+        onChange={(event) => setFilter(event.target.value)}>
+        <option>All</option>
+        <option>Food</option>
+        <option>Transport</option>
+        <option>Shopping</option>
+        <option>Other</option>
+      </select>
+      <h2>Displayed total: ${total.toFixed(2)}</h2>
+      <p>Expenses shown: {filteredExpenses.length}</p>
       <p className="memo-note">
-        useMemo caches the total while you type. Adding or removing an expense
-        recalculates it.
+        useMemo remembers the filtered list and its total while you type.
+        They update when expenses or the category filter changes.
       </p>
-      {expenses.length === 0 ? (
-        <p>No expenses yet. Add your first one above.</p>
+      {filteredExpenses.length === 0 ? (
+        <p>No expenses to show. Add an expense or choose another category.</p>
       ) : (
         <ul className="expense-list">
-          {expenses.map((expense) => (
+          {filteredExpenses.map((expense) => (
             <li key={expense.id}>
-              <span>{expense.name}</span>
+              <span>{expense.name} <small>({expense.category})</small></span>
               <strong>${expense.amount.toFixed(2)}</strong>
               <button
                 type="button"
